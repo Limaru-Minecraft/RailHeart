@@ -1,6 +1,6 @@
 name: RailHeart
 version: '${version}'
-main: net.limaru.railheart.RailHeart
+main: RailHeart
 api-version: 1.18
 depend: [ BKCommonLib ]
 authors: [ Mineshafter61, YJJcoolcool ]
