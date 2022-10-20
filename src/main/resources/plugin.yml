@@ -1,0 +1,7 @@
+name: RailHeart
+version: '${version}'
+main: net.limaru.railheart.RailHeart
+api-version: 1.18
+depend: [ BKCommonLib ]
+authors: [ Mineshafter61, YJJcoolcool ]
+description: Railway signaller and train viewer for Minecraft
