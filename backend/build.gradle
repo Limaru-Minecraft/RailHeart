@@ -19,6 +19,8 @@ repositories {
 }
 
 dependencies {
+  implementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
   compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
