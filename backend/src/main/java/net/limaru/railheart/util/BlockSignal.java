@@ -21,33 +21,19 @@ public class BlockSignal {
     int i = signalPos >> 5;
     // Get position in section
     signalPos &= 31;
-    // Clear yellow signal
-    this.track[i] ^= 0b01L << (signalPos << 1L);
     // Insert train onto track
-    this.track[i] |= 0b10L << (signalPos << 1L);
+    this.track[i] |= 0b11L << (signalPos << 1L);
   }
-  
-//  public void advanceTrains() {
-//    long carry = 0L; // Initialise carry
-//    for (int i = 0; i < track.length; i++) {
-//      // Register carry-over from previous section
-//      track[i] |= carry;
-//      // Get this section's carry-over for the next section
-//      carry = (track[i] & -4611686018427387904L) >>> 62;
-//      // Main advance
-//      track[i] <<= 2;
-//    }
-//  }
   
   /**
    * Advances a train by 1 signal
    * @param signalPos Current signal position
    */
   public void advanceTrain(int signalPos) {
-    // Make current position yellow (xx10 -> xx01).
-    this.track[signalPos >> 5] ^= 0b11L << ((signalPos & 31) << 1L);
-    // Make next position red (00xx -> 10xx)
-    this.track[signalPos >> 5] |= 0b10L << ((++signalPos & 31) << 1L);
+    // Make current position yellow (xx11 -> xx01).
+    this.track[signalPos >> 5] ^= 0b10L << ((signalPos & 31) << 1L);
+    // Make next position red (00xx -> 11xx)
+    this.track[signalPos >> 5] |= 0b11L << ((++signalPos & 31) << 1L);
   }
   
   /**
@@ -55,33 +41,36 @@ public class BlockSignal {
    */
   public void updateYellows() {
     // Test for reds
-    long[] clone = track.clone();  // copy red signals on track
     for (int i = 0; i < track.length; i++) {
-      clone[i] &= 0b10101010_10101010_10101010_10101010_10101010_10101010_10101010_10101010L;
+      long reds = (track[i] &     // Check ones places' bits
+                   track[i] >> 1) // Check two places' bits
+                     >> 2;        // if both are 1, the ones place will be a 1. Right shift by 2 for insertion
+      long carry = (track[i+1] &     // Check ones places' bits
+                    track[i+1] >> 1) // Check two places' bits
+                      << 62;         // Left shift by 62 for carry-over
+      reds = reds | carry;
+      // Insert yellows
+      track[i] |= reds;
     }
-    // Offset tester array by 2 to check whether the previous signal is also red
-    for (int i = 0; i < track.length-1; i++) {
-      clone[i] >>= 2;
-      clone[i] |= (clone[i+1] & 0b10) << 62;
-    } clone[track.length-1] >>= 2;
-    // Remove setter positions that are red
-    for (int i = 0; i < track.length; i++) {
-      clone[i] ^= track[i];
-    }
-    // Insert yellows
-    for (int i = 0; i < track.length-1; i++) {
-      clone[i] >>= 1;
-      clone[i] |= (clone[i+1] & 1) << 63;
-      track[i] |= clone[i];
-    } clone[track.length-1] >>= 1;
-    track[track.length-1] |= clone[track.length-1];
   }
   
   /**
    * Updates all green signal positions
    */
   public void updateGreens() {
-  
+    // Test for yellows
+    for (int i = 0; i < track.length; i++) {
+      long yellows = (~track[i] &     // Check ones places' bits (0)
+                       track[i] >> 1) // Check two places' bits (1)
+                      >> 1;           // if 01 is found, both places will be 1. Right shift for copying
+      yellows |= yellows >> 1;
+      long carry = (~track[i+1] &     // Check ones places' bits (0)
+                        track[i+1] >> 1) // Check two places' bits (1)
+                       >> 1;
+      yellows = yellows | carry;
+      // Insert greens
+      track[i] = ~(~track[i] | yellows);
+    }
   }
   
   /**
