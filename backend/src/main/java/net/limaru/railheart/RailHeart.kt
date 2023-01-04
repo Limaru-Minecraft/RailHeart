@@ -5,11 +5,11 @@ import org.bukkit.plugin.java.JavaPlugin
 class RailHeart : JavaPlugin() {
   override fun onEnable() {
     // Plugin startup logic
-    logger.info("Enabled RailHeart Plugin!")
+    logger.info("Enabled Project RailHeart!")
   }
 
   override fun onDisable() {
     // Plugin shutdown logic
-    logger.info("Disabled RailHeart Plugin!")
+    logger.info("Disabled Project RailHeart!")
   }
 }
