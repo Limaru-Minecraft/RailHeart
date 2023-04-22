@@ -1,0 +1,8 @@
+name: RailHeart
+version: '${version}'
+main: core.RailHeart
+api-version: 1.18
+prefix: RH
+authors: [ Mineshafter61 ]
+description: The premiere plugin for signalling TrainCarts trains!
+website: www.limaru.net
