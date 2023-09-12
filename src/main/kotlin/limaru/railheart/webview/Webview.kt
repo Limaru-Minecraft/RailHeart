@@ -10,24 +10,15 @@ import limaru.railheart.RailHeart
 
 class Webview : RHModule {
   private val plugin: RailHeart = RailHeart.getPlugin(RailHeart::class.java)
+  private val webserver: RHWeb = RHWeb()
 
   override fun onEnable() {
     plugin.logger.info("Webview module has been enabled!")
     val port : Int = plugin.config.getInt("webserver-port", 8080)
-    webserver(port)
+    RHWeb.webserver(port)
   }
 
   override fun onDisable() {
     plugin.logger.info("Webview module has been disabled!")
-  }
-
-  fun webserver(port: Int) {
-    embeddedServer(Netty, port) {
-      routing {
-        get("/") {
-          call.respondText("Hello, world!")
-        }
-      }
-    }.start(wait = true)
   }
 }
